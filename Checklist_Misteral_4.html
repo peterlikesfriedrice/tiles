@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanical Strat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Changed to flex-start */
+            align-items: center;
+            position: relative;
+            padding-top: 17px; /* Adjusted padding-top for extra spacing */
+        }
+
+        h1 {
+            font-size: 4.25em; /* Adjusted font-size */
+            font-weight: bold;
+            color: white;
+            margin-top: 40px; /* Adjusted margin-top to move content down */
+            margin-bottom: 40px; /* Adjusted margin to shift content up */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr); /* Adjusted for 6 boxes across */
+            gap: 12px; /* Adjusted gap */
+            overflow: auto; /* Added overflow property */
+            max-height: 80vh; /* Adjust as needed */
+            max-width: 100vw; /* Adjust as needed */
+            padding: 12px; /* Adjusted padding for extra spacing */
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 13.2px; /* Increased border-radius by 10% */
+            width: 196.35px; /* Increased width by 10% */
+            height: 196.35px; /* Increased height by 10% */
+            box-shadow: 0 7.392px 20.776px 0 rgba(31, 38, 135, 0.37); /* Increased box-shadow by 10% */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 30px; /* Added padding for text boundary */
+            box-sizing: border-box; /* Ensure padding is included in the box size */
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: skewX(-25deg);
+            transition: 0.5s;
+        }
+
+        .box.active::before {
+            left: 150%;
+            transition: 0.5s;
+        }
+
+        .box.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #6d28d9 50%, #8b5cf6 100%);
+        }
+
+        .box.second-state {
+            background: linear-gradient(135deg, #ff0000 0%, #8b0000 100%);
+        }
+
+        .box span {
+            color: #fff;
+            font-size: 0.9705em; /* Increased font-size by 10% */
+            font-weight: 300;
+        }
+
+        .box span {
+            font-weight: bold; /* Added this line to bold the text */
+        }
+
+        .gear-icon {
+            position: absolute;
+            top: 51px; /* Adjusted top position */
+            right: 68px; /* Adjusted right position */
+            font-size: 1.7em; /* Adjusted font-size */
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -255px; /* Adjusted width */
+            width: 255px; /* Adjusted width */
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Same purple background */
+            color: #fff;
+            transition: right 0.3s ease;
+            padding: 17px; /* Adjusted padding */
+            box-shadow: -1.7px 0 4.2px rgba(0,0,0,0.5); /* Adjusted box-shadow */
+            display: none; /* Hide sidebar initially */
+        }
+
+        .sidebar.active {
+            display: block; /* Show sidebar when active */
+            right: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 17px; /* Adjusted top position */
+            left: 17px; /* Adjusted left position */
+            font-size: 1.275em; /* Adjusted font-size */
+            cursor: pointer;
+        }
+
+        .sidebar-content {
+            margin-top: 34px; /* Adjusted margin-top */
+        }
+
+        .sidebar input {
+            width: 100%;
+            padding: 8.5px; /* Adjusted padding */
+            margin: 8.5px 0; /* Adjusted margin */
+            border: none;
+            border-radius: 4.2px; /* Adjusted border-radius */
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 8.5px; /* Adjusted padding */
+            margin-top: 17px; /* Adjusted margin-top */
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4.2px; /* Adjusted border-radius */
+            cursor: pointer;
+        }
+
+        .menu {
+            position: absolute;
+            top: 51px; /* Adjusted top position */
+            right: 150px; /* Adjusted right position */
+            font-size: 1.53em; /* Reduced font-size by 10% */
+            cursor: pointer;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            gap: 10px; /* Space between menu items */
+        }
+
+        .menu span {
+            cursor: pointer;
+        }
+
+        .menu span.active {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reduce Cognitive Load - Food Damage Happens At Home</h1>
+    <div class="menu">
+        <span class="active" onclick="showWork()">Work</span>
+        <span>|</span>
+        <span onclick="showPersonal()">Personal</span>
+    </div>
+    <i class="fas fa-cog gear-icon" onclick="toggleSidebar()"></i>
+    <div class="container" id="work-container">
+        <div class="box active" onclick="toggleActive(this)"><span><b>SETUP<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Wait For <br>Ripster Highlight<br>(Avoid Chop)</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30M MACD Lit <br>(Else Hardest Days)<br><br>small size if not lit</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Trading View (Load) <br>15M Wide Ribbons<br><br>Look At<br>TTM Strength</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Price Action <br>On 2/3M Ribbons <br>Must Look Nice</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10M Leaf White Space <br><br> Take new 2M MACD here</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Wide MTF Ribbons <br><br> Wide 10M alligator teeth</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Beautifully stacked MTF alligator <br><br>All Alligators face the same way</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>In Teeth Of All Alligators</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10M Triple Ribbons</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>5M(or 10M) leaf and correct BB dot colors, likely very safe place to trend follow</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>SETUP2<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>15M TOS Chart / 15M MACD Lit / Triple ribbons<br>Look Healthy?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30M TOS Chart<br>Look Healthy?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Is the 9/20 leaf healthy looking on the 15M and 30M?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>When the 2M <br>BB dot matches cloud<br> just keep buying $1K??</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>New 2M MACD/TTM where all MTF 9SMA are stacked because this means leaf on every time frame</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Why am I trading every day?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Stop by 10am SF time<br><br>Stop Early <br>Profit Likely</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Trading is destroying my mental health because I must win everyday</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Maybe only trade when the 15 and 30 mins are leaf in the white space?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>If I commit to 1/2/3/5/10/15/30 macd, I’d never have to think ever again.</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>DANGERS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Ribbons are stronger than TTM XB</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Gambling, Not Trading</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>No Stop Loss</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>TTM XB Can <br>Not Be Trusted</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Context Matters do not Take TTM Same Side Blindly</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Must Trade<br>In The MTF<br>Alligator Teeth</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Mean Reversion<br>Is Always <br>Low Confidence</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>No Doubling</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Adding To A <br>Losing Trade<br>Is Dangerous</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Flat Bunched MAs is dangerous</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>STRATEGY<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Ripster Highlight</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>+ Brand New <br>2M MACD Lit <br>And TTM</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>+ MTF 9SMA Stacked</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>+ 2M Stacked <br>9/20/30/50 SMA</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>+ 2/3M Triple Ribbons</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>+ Stop Loss<br>To Make it<br>Mechanical</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>MACD 30/15/10 <br>Already Lit +<br>New 2M MACD</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Stacked 10 SMA</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>STRATEGY2<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>All TTM Same Side <br>w/ Wide Ribbons</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Triple Ribbons <br>All Time Frames</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>All Alligators <br>Same Direction</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>MACD BB Dot <br>Color Matches <br>9/20 Cloud Color</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Wrong 1M Alligator <br>Rejoin MTF Ribbon</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>All Alligator <br>Same Side, <br>Only 1M TTM <br>Pullback</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10M Triple Ribbon <br>Take New <br>2M MACD/TTM</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>MEAN REVERSION<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>There must be no evidence of trend</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Small $1k plus initially, then wait for more signals to add small</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Target is $10 or $15, that's it. </b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Small profit goals allows me to keep adding for a long time</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>If I can heavily automate stock photos, I can automate stock trading</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>If I can make umbrella wind proof, I can make trading idiot proof</b></span></div>
+
+    </div>
+
+    <div class="container" id="personal-container" style="display: none;">
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>PERSONAL<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Lift Weights</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Squats</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Survivor Diet <br><br>Fast till 1pm</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Goal <br>3,000 Calories</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Intense Hiking</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Drink fiber</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>listen to podcast</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>reduce emails</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>What is my BFF advice for today?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Read all of my printed out illustrations</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>THOUGHTS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Who Would I Be Without That Thought?</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Don't Decide With Emotions, Use Logic</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>There is no way I can eat enough calories from only carrots</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>I have to learn to walk on treadmill while I work</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>---</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Psychotic trading = depression = eating = fat</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>What is measured is managed</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>Stare at rear view mirror while changing lanes to reduce mistakes</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>I have lots<br>blind spots<br>that are <br>hard to see</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>FOOD DAMAGE<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>5am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>6am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>7am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>8am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>9am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>11am</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>12pm</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>1pm</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>2pm</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>WEIGHTS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>SA SWINGS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>PUSH-UPS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>SIT-UPS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>SQUATS / LUNGE<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>PLANKS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>BEHIND HEAD CURLS<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+        <div class="box active" onclick="toggleActive(this)"><span><b>WEIGHTS + BODY TWIST<br>---------------</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>10</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>20</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>30</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>40</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>50</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>60</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>70</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>80</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>90</b></span></div>
+        <div class="box" onclick="toggleActive(this)"><span><b>100</b></span></div>
+
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <i class="fas fa-times close-btn" onclick="toggleSidebar()"></i>
+        <div class="sidebar-content">
+            <h2>Edit Text</h2>
+            <input type="text" id="box1" placeholder="Option 1">
+            <input type="text" id="box2" placeholder="Option 2">
+            <input type="text" id="box3" placeholder="Option 3">
+            <input type="text" id="box4" placeholder="placeholder">
+            <input type="text" id="box5" placeholder="placeholder">
+            <input type="text" id="box6" placeholder="placeholder">
+            <input type="text" id="box7" placeholder="placeholder">
+            <input type="text" id="box8" placeholder="placeholder">
+            <input type="text" id="box9" placeholder="placeholder">
+            <input type="text" id="box10" placeholder="placeholder">
+            <input type="text" id="box11" placeholder="placeholder">
+            <input type="text" id="box12" placeholder="placeholder">
+            <input type="text" id="box13" placeholder="placeholder">
+            <input type="text" id="box14" placeholder="placeholder">
+            <input type="text" id="box15" placeholder="placeholder">
+            <input type="text" id="box16" placeholder="placeholder">
+            <input type="text" id="box17" placeholder="placeholder">
+            <input type="text" id="box18" placeholder="placeholder">
+            <button class="apply-btn" onclick="applyText()">Apply</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleActive(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+                element.classList.add('second-state');
+            } else if (element.classList.contains('second-state')) {
+                element.classList.remove('second-state');
+            } else {
+                element.classList.add('active');
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function applyText() {
+            document.querySelectorAll('.box span').forEach((span, index) => {
+                const input = document.getElementById('box' + (index + 1));
+                if (input) {
+                    span.innerHTML = '<b>' + capitalizeFirstLetter(input.value) + '</b>';
+                }
+            });
+        }
+
+        function showWork() {
+            document.getElementById('work-container').style.display = 'grid';
+            document.getElementById('personal-container').style.display = 'none';
+            document.querySelector('.menu span:nth-child(1)').classList.add('active');
+            document.querySelector('.menu span:nth-child(3)').classList.remove('active');
+        }
+
+        function showPersonal() {
+            document.getElementById('work-container').style.display = 'none';
+            document.getElementById('personal-container').style.display = 'grid';
+            document.querySelector('.menu span:nth-child(1)').classList.remove('active');
+            document.querySelector('.menu span:nth-child(3)').classList.add('active');
+        }
+
+        // Capitalize text on page load
+        window.onload = function() {
+            document.querySelectorAll('.box span').forEach(span => {
+                span.innerHTML = '<b>' + capitalizeFirstLetter(span.innerHTML) + '</b>';
+            });
+        };
+
+        // Add event listener for keydown
+        document.addEventListener('keydown', function(event) {
+            if (event.key === '1') {
+                showWork();
+            } else if (event.key === '2') {
+                showPersonal();
+            }
+        });
+    </script>
+</body>
+</html>
